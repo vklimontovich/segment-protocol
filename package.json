@@ -1,0 +1,24 @@
+{
+  "name": "segment-protocol",
+  "module": "index.ts",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project ./",
+    "dev": "tsc --watch --project ./",
+    "test": "bun test",
+    "format:check": "prettier --check --config ./.prettierrc.json --ignore-path ./.prettierignore .",
+    "format": "prettier --write --config ./.prettierrc.json --ignore-path ./.prettierignore ."
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.7",
+    "prettier": "^3.0.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "typescript": "^5.2.2"
+  }
+}

@@ -1,0 +1,13 @@
+**/*.js
+# dependencies
+/node_modules
+.next
+.run
+# bundle stats
+*.mdx
+*.md
+# configs -- will keep multi-line json arrays
+.eslintrc.json
+package.json
+tsconfig.json
+tsconfig.paths.json
