@@ -53,7 +53,7 @@ export function getLoggingAnalytics(
 
 export const eventTypes = ["track", "page", "identify", "group", "alias", "screen"] as const;
 
-export type EventType = typeof eventTypes[number];
+export type EventType = (typeof eventTypes)[number];
 
 /**
  * Event coming from client library
