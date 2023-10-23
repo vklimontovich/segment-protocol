@@ -15,11 +15,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "declaration": true,
-    "types": [
-      "bun-types"
-    ]
+    "types": ["bun-types"]
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

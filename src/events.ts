@@ -1,28 +1,8 @@
 import { createAnalyticsSerializer, CreateAnalyticsSerializerOpts } from "./serializer";
+import { DefaultEventTypes, TypesafeEvents } from "./typesafe";
 
 export type ID = string | null | undefined;
 export type ISO8601Date = string;
-
-export type TypesafeEvents<
-  T_page extends JSONObject = JSONObject,
-  T_track extends JSONObject = JSONObject,
-  T_identify extends JSONObject = {},
-  T_traits extends JSONObject = JSONObject,
-  T_types extends string = string,
-> = {
-  page?: T_page;
-  identify?: T_identify;
-  traits?: T_traits;
-  track?: T_track;
-  eventNames?: T_types;
-};
-
-export type DefaultEventTypes = {
-  [k in keyof Omit<TypesafeEvents, "identify" | "eventNames">]: JSONObject;
-} & {
-  eventNames: string;
-  identify: {};
-};
 
 export function getTypesafeAnalytic<T>(dummyAnalytics: AnalyticsInterface) {
   return dummyAnalytics as T;

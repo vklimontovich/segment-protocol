@@ -1,18 +1,30 @@
 {
   "name": "segment-protocol",
   "module": "index.ts",
+  "version": "0.0.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vklimontovich/segment-protocol.git"
+  },
+  "homepage": "https://github.com/vklimontovich/segment-protocol#readme",
   "scripts": {
-    "build": "tsc --project ./",
+    "build": "bun format:check && eslint --ext .ts,.tsx . && tsc --project ./",
     "dev": "tsc --watch --project ./",
     "test": "bun test",
     "format:check": "prettier --check --config ./.prettierrc.json --ignore-path ./.prettierignore .",
-    "format": "prettier --write --config ./.prettierrc.json --ignore-path ./.prettierignore ."
+    "format": "prettier --write --config ./.prettierrc.json --ignore-path ./.prettierignore .",
+    "release": "pnpm build && monorel --npm-tag latest",
+    "release:canary": "monorel --version '0.9.1-alpha.{rev}.{time}' --npm-tag canary --publish"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "bun-types": "^1.0.7",
+    "eslint": "^8.52.0",
+    "monorel": "^0.4.2",
     "prettier": "^3.0.3"
   },
   "peerDependencies": {

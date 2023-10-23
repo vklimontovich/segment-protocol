@@ -9,7 +9,18 @@ vendor has its own treatment and set of extension. This project aims to cover mo
 
 Along with the types, this project also provides a set of tools to work them.
 
-## Types
+## Install
+
+```bash
+npm install -S segment-protocols #for npm
+yarn add segment-protocols       #for yarn
+pnpm add segment-protocols       #for pnpm
+```
+
+## Usage
+
+
+### Types overview
 
 `AnalyticsInterface` is an interface that contains all the methods that are supported by Segment-compatible SDKs: `track()`, `page()`, `screen()` etc.
 
@@ -19,7 +30,9 @@ of subtypes that narrow it down for particular event type: `ScreenEvent`, `Track
 `AnalyticsServerEvent` is an event that is being processed by server. It's an `AnayliticsClientEvent` plus certain properties
 which is inferred from HTTP Request context, such as IP address
 
-## Compile-time type-safety
+
+
+### Compile-time type-safety
 
 Segment protocol allows to pass any set of properties and user traits along with event. It's convinient and gives a lot of flexibility,
 but at the same time it's easy to make a mistake and pass a wrong property name or value type. `AnalyticsTypeHelper` solves this:
@@ -53,11 +66,25 @@ myAnalytics.track("Sign Up"); //✅OK
 myAnalytics.track("sign up"); //⚠️Error - misspelled event name
 ```
 
-## Tools
+### Tools
 
-`createAnalyticsParser()` creates an adjusted implementation of `AnalyticsInterface` that returns `AnalyticsServerEvent`
+`createAnalyticsSerializer()` creates an adjusted implementation of `AnalyticsInterface` that returns `AnalyticsServerEvent`
 on every method call. This function serves as a reference implementation that turns `.track()`, `.page()` etc. methods
 into a JSON message that is being sent to Segment-compatible end-point.
+
+
+---
+
+## Maintainers guide
+
+`bun (>= 1.0.0)` and `pnpm (>= 8.1.0)` are required. `bun` is used for building and package management,
+`pnpm` is used only for publishing to NPM registry
+
+* `bun build` — to build the project (including linting and type-checking); 
+* `bun test` — to run tests
+* `bun format:check` - to check code formatting; `bun format` - to reformat all files
+* `bun run build && bun release` - to publish a new version to NPM registry (dry run); `bun build && bun release --publish` to actually publish it
+* `bun run build && bun release:canary` - to publish a new canary version
 
 
 
