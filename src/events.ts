@@ -51,6 +51,10 @@ export function getLoggingAnalytics(
   return analytics as AnalyticsInterface;
 }
 
+export const eventTypes = ["track", "page", "identify", "group", "alias", "screen"] as const;
+
+export type EventType = typeof eventTypes[number];
+
 /**
  * Event coming from client library
  */
@@ -60,7 +64,7 @@ export interface AnalyticsClientEvent {
    */
   messageId: string;
   timestamp?: Date | ISO8601Date;
-  type: "track" | "page" | "identify" | "group" | "alias" | "screen";
+  type: EventType;
   // page specific
   category?: string;
   name?: string;
