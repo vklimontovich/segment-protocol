@@ -8,7 +8,10 @@ export type EventTemplate = Pick<
 > &
   Required<Pick<AnalyticsClientEvent, "sentAt" | "context" | "messageId">>;
 
-type EventTemplateFactory = (opts: { type: AnalyticsClientEvent["event"] }) => Partial<EventTemplate>;
+type EventTemplateFactory = (opts: {
+  type: AnalyticsClientEvent["type"];
+  name: AnalyticsClientEvent["name"];
+}) => Partial<EventTemplate>;
 
 export interface CreateAnalyticsSerializerOpts {
   template?: EventTemplateFactory;
@@ -29,7 +32,10 @@ export function createAnalyticsSerializer(_opts: CreateAnalyticsSerializerOpts =
   const opts: Required<CreateAnalyticsSerializerOpts> = { ..._opts, ...defaultOpts };
   return {
     track(eventName: string, properties): TrackEvent {
-      const template = { ...defaultTemplate({ type: "track" }), ...opts.template({ type: "track" }) };
+      const template = {
+        ...defaultTemplate({ type: "track", name: eventName }),
+        ...opts.template({ type: "track", name: eventName }),
+      };
       return {
         ...template,
         type: "track",
@@ -49,7 +55,10 @@ export function createAnalyticsSerializer(_opts: CreateAnalyticsSerializerOpts =
           ? _category
           : {}) as JSONObject) || {};
 
-      const template = { ...defaultTemplate({ type: "page" }), ...opts.template({ type: "page" }) };
+      const template = {
+        ...defaultTemplate({ type: "page", name: undefined }),
+        ...opts.template({ type: "page", name: undefined }),
+      };
       return {
         ...template,
         type: "page",
@@ -61,7 +70,10 @@ export function createAnalyticsSerializer(_opts: CreateAnalyticsSerializerOpts =
     identify(_id, _traits): IdentifyEvent {
       const id = typeof _id === "string" ? _id : undefined;
       const traits: JSONObject = (typeof _id === "object" ? _id : _traits) || {};
-      const template = { ...defaultTemplate({ type: "identify" }), ...opts.template({ type: "identify" }) };
+      const template = {
+        ...defaultTemplate({ type: "identify", name: undefined }),
+        ...opts.template({ type: "identify", name: undefined }),
+      };
       return {
         ...template,
         type: "identify",

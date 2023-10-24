@@ -132,10 +132,6 @@ export type ServerContextReservedProps = {
   //don'analytics use this field in functions, use context.ip instead
   request_ip?: string;
   receivedAt?: ISO8601Date;
-  sentAt?: ISO8601Date;
-  timestamp?: ISO8601Date;
-  userId?: ISO8601Date;
-  type?: ISO8601Date;
 };
 /**
  * A context of an event that is added on server-side
