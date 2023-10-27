@@ -1,5 +1,5 @@
 import { createAnalyticsSerializer, CreateAnalyticsSerializerOpts } from "./serializer";
-import { DefaultEventTypes, TypesafeEvents } from "./typesafe";
+import { DefaultEventTypes, EmptyObject, TypesafeEvents } from "./typesafe";
 
 export type ID = string | null | undefined;
 export type ISO8601Date = string;
@@ -46,6 +46,10 @@ export function getLoggingAnalytics(
     track: createImpl("track"),
     page: createImpl("page"),
     identify: createImpl("identify"),
+    group: createImpl("group"),
+    alias: createImpl("alias"),
+    screen: createImpl("screen"),
+    reset: async () => {},
   };
 
   return analytics as AnalyticsInterface;
@@ -100,10 +104,20 @@ export interface PageEvent<P extends JSONObject = JSONObject> extends TrackingFa
   type: "page";
 }
 
+export interface ScreenEvent<P extends JSONObject = JSONObject> extends TrackingFamilyEvent<P> {
+  type: "screen";
+}
+
 export interface TrackEvent<P extends JSONObject = JSONObject> extends TrackingFamilyEvent<P> {
   type: "track";
   //make event name mandatory for track events
   event: string;
+}
+
+export interface AliasEvent extends TrackingFamilyEvent<EmptyObject> {
+  type: "alias";
+  userId: ID;
+  previousId: ID;
 }
 
 export type IdentifyEvent<
@@ -124,6 +138,16 @@ export type IdentifyEvent<
         properties: P;
       }
   );
+
+export type GroupEvent<T extends JSONObject = JSONObject, P extends JSONObject = JSONObject> = AnalyticsClientEvent & {
+  type: "group";
+  //identify event should never have traits in context, only in root
+  context: Omit<AnalyticsContext, "traits">;
+  traits?: T;
+  properties?: P;
+  groupId: ID;
+  userId?: string;
+};
 
 export type ServerContextReservedProps = {
   //always filled with an IP from where request came from
@@ -264,36 +288,27 @@ export interface AnalyticsInterface<T extends TypesafeEvents = DefaultEventTypes
    */
   identify(id?: ID | T["traits"], traits?: T["traits"]): Promise<DispatchedEvent<IdentifyEvent>>;
 
-  // group(groupId?: ID | JSONObject, traits?: JSONObject | null, options?: Options): Promise<DispatchedEvent>;
-  //
-  //
-  // reset(callback?: (...params: any[]) => any): Promise<any>;
-  //
-  // user(): any;
-  //
-  // alias(
-  //   to: string | number,
-  //   from?: string | number | Options,
-  //   options?: Options | Callback,
-  //   callback?: Callback
-  // ): Promise<DispatchedEvent>;
-  //
-  // screen(
-  //   category?: string | object,
-  //   name?: string | object | Callback,
-  //   properties?: JSONObject | Options | Callback | null,
-  //   options?: Options | Callback,
-  //   callback?: Callback
-  // ): Promise<DispatchedEvent>;
+  group(groupId?: ID | JSONObject, traits?: JSONObject | null): Promise<DispatchedEvent<GroupEvent>>;
+
+  reset(): Promise<void>;
+
+  alias(
+    userIdOrObject: string | { userId: ID; previousId: ID },
+    previousUserId?: string
+  ): Promise<DispatchedEvent<AliasEvent>>;
+
+  screen(
+    category?: string | T["page"],
+    name?: string | T["page"],
+    properties?: object | T["page"] | null
+  ): Promise<DispatchedEvent<ScreenEvent>>;
 }
 
-export type ReturnType<K extends keyof AnalyticsInterface> = K extends "page"
-  ? PageEvent
-  : K extends "identify"
-  ? IdentifyEvent
-  : K extends "track"
-  ? TrackEvent
-  : AnalyticsClientEvent;
+export type AnalyticsMethodResult<K extends keyof AnalyticsInterface> = ReturnType<
+  AnalyticsInterface[K]
+> extends Promise<infer R>
+  ? R
+  : AnalyticsInterface[K];
 
 /**
  * This type is an equivalent of AnalyticsInterface, but instead of processing the event it returns
@@ -303,6 +318,6 @@ export type ReturnType<K extends keyof AnalyticsInterface> = K extends "page"
  */
 export type AnalyticsSerializer = {
   [K in keyof AnalyticsInterface]: AnalyticsInterface[K] extends (...args: any[]) => any
-    ? (...args: Parameters<AnalyticsInterface[K]>) => ReturnType<K>
+    ? (...args: Parameters<AnalyticsInterface[K]>) => AnalyticsMethodResult<K>
     : never;
 };

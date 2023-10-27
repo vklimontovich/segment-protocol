@@ -11,7 +11,7 @@
   "homepage": "https://github.com/vklimontovich/segment-protocol#readme",
   "scripts": {
     "build": "bun format:check && eslint --ext .ts,.tsx . && tsc --project ./",
-    "dev": "tsc --watch --project ./",
+    "dev": "tsc --watch --preserveWatchOutput --project ./",
     "test": "bun test",
     "format:check": "prettier --check --config ./.prettierrc.json --ignore-path ./.prettierignore .",
     "format": "prettier --write --config ./.prettierrc.json --ignore-path ./.prettierignore .",

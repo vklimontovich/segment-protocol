@@ -23,11 +23,16 @@ test("testTypedHelper", () => {
   const myAnalytics = getTypesafeAnalytic<MyAnalytics>(dummyAnalytics);
 
   myAnalytics.page({ env: "prod" }); //OK
-  //myAnalytics.page({ otherProp: "prod" }); //Error - unknown property
   myAnalytics.identify({ name: "John Doe", email: "john.doe@gmail.com" }); //OK
-  //myAnalytics.identify({ name: "John Doe" }); //Error - email is missing
   myAnalytics.track("Sign Up"); //OK
+
+  //@-ts-expect-error
   //myAnalytics.track("sign up"); //Error - misspelled error name
+  //@-ts-expect-error
+  //myAnalytics.page({ otherProp: "prod" }); //Error - unknown property
+  //@-ts-expect-error
+  //myAnalytics.identify({ name: "John Doe" }); //Error - email is missing
+
   console.log("All events", dummyAnalytics.log);
   const identifies = dummyAnalytics.log.filter(e => e.type === "identify");
   const tracks = dummyAnalytics.log.filter(e => e.type === "track");
