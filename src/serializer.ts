@@ -85,9 +85,9 @@ export function createAnalytics(opts: CreateAnalyticsOpts): AnalyticsInterface {
     },
     async group(groupId?: ID | JSONObject, traits?: JSONObject | null): Promise<DispatchedEvent<GroupEvent>> {
       const event = serializer.group(groupId, traits);
-      await opts.handler(event);
       state.groupId = event.groupId;
       state.groupTraits = event.traits;
+      await opts.handler(event);
       return event;
     },
     async reset() {
@@ -104,6 +104,7 @@ export function createAnalytics(opts: CreateAnalyticsOpts): AnalyticsInterface {
       const event = serializer.identify(id, traits);
       state.userId = event.userId;
       state.userTraits = event.traits;
+      await opts.handler(event);
       return event;
     },
     async page(
