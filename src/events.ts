@@ -209,11 +209,16 @@ export type PageReservedProps = {
 export interface AnalyticsContext {
   /**
    * IP address of the originating request. If event is sent from a device, then it's an IP of a device
-   * (copied from request_ip)
+   * (copied from requestIp)
    * If request is sent from server-to-server, this field is not automatically populated
    * and should be filled manually
    */
   ip?: string;
+  /**
+   * Automatically detected IP address of the originating request. If event is sent from a device, then it's an IP of a device.
+   * Otherwise, it will be an ip of a server
+   */
+  requestIp?: string;
 
   page?: PageReservedProps & JSONObject;
   metrics?: CompactMetric[];
