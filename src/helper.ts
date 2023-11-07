@@ -1,6 +1,6 @@
 import { AnalyticsContext } from "./events";
 
-function parseUrl(url?: string): { host?: string; path?: string; search?: string, hash?: string } {
+function parseUrl(url?: string): { host?: string; path?: string; search?: string; hash?: string } {
   if (!url) {
     return {};
   }
