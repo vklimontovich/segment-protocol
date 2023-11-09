@@ -30,7 +30,20 @@ of subtypes that narrow it down for particular event type: `ScreenEvent`, `Track
 `AnalyticsServerEvent` is an event that is being processed by server. It's an `AnayliticsClientEvent` plus certain properties
 which is inferred from HTTP Request context, such as IP address
 
+### Tools
 
+The library provides a number of tools to simplify the implementation of Segment protocol for various use-cases
+
+`createAnalyticsSerializer()` creates an adjusted implementation of `AnalyticsInterface` that returns `AnalyticsServerEvent`
+on every method call. This function serves as a reference implementation that turns `.track()`, `.page()` etc. methods
+into a JSON message that is being sent to Segment-compatible end-point.
+
+`createAnalytics(opts)` creates an implementation of `AnalyticsInterface` that uses `createAnalyticsSerializer()` to serialize events,
+and passes it to `opts.handler`.
+
+`inferAnalyticsContextFields()`. `AnalyticsClientEvent` and `AnalyticsServerEvent` has a number of fields that can be inferred from others. For example,
+`context.page.referring_domain` can be inferred from `context.page.referred`. This function takes an event and returns a new event, with inferred fields if those fields are missing 
+in the original event.
 
 ### Compile-time type-safety
 
@@ -65,13 +78,6 @@ myAnalytics.identify({ name: "John Doe" }); //⚠️Error - email is missing
 myAnalytics.track("Sign Up"); //✅OK
 myAnalytics.track("sign up"); //⚠️Error - misspelled event name
 ```
-
-### Tools
-
-`createAnalyticsSerializer()` creates an adjusted implementation of `AnalyticsInterface` that returns `AnalyticsServerEvent`
-on every method call. This function serves as a reference implementation that turns `.track()`, `.page()` etc. methods
-into a JSON message that is being sent to Segment-compatible end-point.
-
 
 ---
 
